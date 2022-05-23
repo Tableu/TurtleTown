@@ -14,13 +14,6 @@ namespace Systems.Save
     [CreateAssetMenu(fileName = "SaveManager", menuName = "SaveManager")]
     public class SaveManager : ScriptableObject
     {
-
-        /// <summary>
-        ///     The list of UUIDs for the ship data scriptable objects
-        /// </summary>
-        [FormerlySerializedAs("shipUuids")] [SerializeField]
-        private IdList shipIds;
-
         /// <summary>
         ///     The path to save and load to. Automatically set if not manually specified.
         /// </summary>

@@ -48,7 +48,7 @@ public abstract class TimeResource : TimerObject, ISavable
         var saveData = state.ToObject<SaveData>();
         Value = saveData.Value;
         Rate = saveData.Rate;
-        _timer.Interval = saveData.Interval;
+        _interval = saveData.Interval;
         Multiplier = saveData.Multiplier;
     }
 
