@@ -3,14 +3,19 @@ using System.Timers;
 using Newtonsoft.Json.Linq;
 using Systems.Save;
 using UnityEngine;
+using UnityEngine.UI;
 
-public abstract class TimeResource : TimerObject, ISavable
+public abstract class TimeResource : TimerObject
 {
+    [SerializeField] private SaveData initialData;
+    [SerializeField] private Text _text;
+    private bool _init;
     public float Multiplier
     {
         get;
         set;
     } = 1;
+
     public int Value
     {
         get;
@@ -22,14 +27,28 @@ public abstract class TimeResource : TimerObject, ISavable
         set;
     }
 
-    public string id => "time_resource";
+    private void Update()
+    {
+        _text.text = Value.ToString();
+    }
 
     private new void Start()
     {
         base.Start();
 #if UNITY_ANDROID
-        Value += Mathf.RoundToInt(Multiplier * Rate * UnityEngine.InputSystem.StepCounter.current.stepCounter.ReadValue());
+        if (UnityEngine.InputSystem.StepCounter.current != null)
+        {
+            Value += Mathf.RoundToInt(Multiplier * Rate * UnityEngine.InputSystem.StepCounter.current.stepCounter.ReadValue());
+        }
 #endif
+        if (!_init)
+        {
+            Value = initialData.Value;
+            Rate = initialData.Rate;
+            _interval = initialData.Interval;
+            Multiplier = initialData.Multiplier;
+            _text.text = Value.ToString();
+        }
     }
 
     public object SaveState()
@@ -50,30 +69,15 @@ public abstract class TimeResource : TimerObject, ISavable
         Rate = saveData.Rate;
         _interval = saveData.Interval;
         Multiplier = saveData.Multiplier;
+        _init = true;
     }
 
     [Serializable]
-    private struct SaveData
+    public struct SaveData
     {
         public int Value;
         public int Rate;
         public float Interval;
         public float Multiplier;
-    }
-}
-
-public class Coins : TimeResource
-{
-    protected override void OnTimerEvent(object source, ElapsedEventArgs e)
-    {
-        Value += Rate;
-    }
-}
-
-public class Energy : TimeResource
-{
-    protected override void OnTimerEvent(object source, ElapsedEventArgs e)
-    {
-        Value += Rate;
     }
 }
