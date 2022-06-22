@@ -1,11 +1,4 @@
-using System.Timers;
-using Systems.Save;
-
-public class CoinsResource : TimeResource,ISavable
+public class CoinsResource : Resource
 {
-    public string id => "coins_resource";
-    protected override void OnTimerEvent(object source, ElapsedEventArgs e)
-    {
-        Value += Rate;
-    }
+    public override string id => "coins_resource";
 }

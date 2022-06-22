@@ -9,7 +9,9 @@ public class ParallaxBackground : MonoBehaviour
     public List<Vector2> scrollSpeed;
 
     private Renderer _renderer;
-    
+
+    public bool EnableBackground = true;
+
     void Start()
     {
         _renderer = GetComponent<Renderer>();
@@ -18,7 +20,7 @@ public class ParallaxBackground : MonoBehaviour
     void Update()
     {
         Material[] backgrounds = _renderer.materials;
-        if (backgrounds != null)
+        if (backgrounds != null && EnableBackground)
         {
             int max = Mathf.Min(backgrounds.Length, scrollSpeed.Count);
             for (int index = 0; index < max; index++)

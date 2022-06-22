@@ -1,12 +1,4 @@
-using System.Timers;
-using Systems.Save;
-
-public class EnergyResource : TimeResource, ISavable
+public class EnergyResource : Resource
 {
-    public string id => "energy_resource";
-
-    protected override void OnTimerEvent(object source, ElapsedEventArgs e)
-    {
-        Value += Rate;
-    }
+    public override string id => "energy_resource";
 }

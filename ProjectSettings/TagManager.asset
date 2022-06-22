@@ -44,3 +44,12 @@ TagManager:
   - name: Background
     uniqueID: 3540022149
     locked: 0
+  - name: Tilemap
+    uniqueID: 96614623
+    locked: 0
+  - name: Objects
+    uniqueID: 397021205
+    locked: 0
+  - name: Workers
+    uniqueID: 3689973093
+    locked: 0
