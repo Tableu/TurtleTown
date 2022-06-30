@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Systems.Save;
 using UnityEngine;
@@ -20,27 +21,25 @@ public class TravelManager : MonoBehaviour, ISavable
             return _instance;
         }
     }
-    private TimedTask _travelTimer;
     public string id => "travel_manager";
     
     public bool IsTravelling { get; private set; }
+    public float RemainingDuration { get; private set; }
     public Action TravelStart;
     public Action TravelEnd;
 
-
-    private void Awake()
+    public async void StartTravel(float duration, int interval)
     {
-        TravelEnd += delegate
-        {
-            IsTravelling = false;
-        };
-    }
-    
-    public void StartTravel(float duration, float interval)
-    {
+        float startTime = Time.time;
         IsTravelling = true;
         TravelStart?.Invoke();
-        _travelTimer = new TimedTask(TravelEnd, null, duration, interval);
+        while (Time.time - startTime < duration)
+        {
+            RemainingDuration = Time.time - startTime;
+            await Task.Delay(interval);
+        }
+        IsTravelling = false;
+        TravelEnd?.Invoke();
     }
     
     public object SaveState()
@@ -48,7 +47,7 @@ public class TravelManager : MonoBehaviour, ISavable
         return new SaveData()
         {
             IsTravelling = IsTravelling,
-            Duration = _travelTimer?.TimerDuration ?? 0f
+            Duration = RemainingDuration
         };
     }
 
@@ -58,7 +57,7 @@ public class TravelManager : MonoBehaviour, ISavable
         IsTravelling = saveData.IsTravelling;
         if (saveData.Duration > 0)
         {
-            _travelTimer = new TimedTask(TravelEnd, null, saveData.Duration, 1000);
+            StartTravel(saveData.Duration, 1000);
         }
     }
 
@@ -85,7 +84,7 @@ public class TravelManager : MonoBehaviour, ISavable
             Debug.Log("TravelEnd");
             _parallaxBackground.EnableBackground = false;
         };
-        StartTravel(5000, 1000);
+        StartTravel(15, 1000);
     }
 #endif
 }

@@ -1,10 +1,10 @@
-using System;
 using UnityEngine;
 
 public class Screen : MonoBehaviour
 {
     private static Screen _current;
     public bool init;
+    [SerializeField] private GameObject _camera;
 
     public void Awake()
     {
@@ -19,9 +19,11 @@ public class Screen : MonoBehaviour
         if (_current != this)
         {
             GameUtils.SetAllRenderers(gameObject, true);
+            _camera.SetActive(true);
             if (_current != null)
             {
                 GameUtils.SetAllRenderers(_current.gameObject, false);
+                _current._camera.SetActive(false);
             }
 
             _current = this;

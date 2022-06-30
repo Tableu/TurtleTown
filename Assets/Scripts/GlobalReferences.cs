@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GlobalReferences : MonoBehaviour
@@ -24,6 +25,18 @@ public class GlobalReferences : MonoBehaviour
     {
         get;
         private set;
+    }
+
+    public PlayerInputActions PlayerInputActions
+    {
+        get;
+        private set;
+    }
+
+    private void Awake()
+    {
+        PlayerInputActions = new PlayerInputActions();
+        PlayerInputActions.Enable();
     }
 
     private void OnApplicationQuit()
