@@ -28,6 +28,11 @@ public class TravelManager : MonoBehaviour, ISavable
     public Action TravelStart;
     public Action TravelEnd;
 
+    private void Awake()
+    {
+        _instance = this;
+    }
+
     public async void StartTravel(float duration, int interval)
     {
         float startTime = Time.time;

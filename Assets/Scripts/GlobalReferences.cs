@@ -35,6 +35,7 @@ public class GlobalReferences : MonoBehaviour
 
     private void Awake()
     {
+        _instance = this;
         PlayerInputActions = new PlayerInputActions();
         PlayerInputActions.Enable();
     }
