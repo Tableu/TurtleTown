@@ -3,28 +3,58 @@ using UnityEngine;
 public class RandomMoveState : IState
 {
     private Customer _customer;
-    private Rigidbody2D _rigidbody2D;
-    public RandomMoveState(Customer customer, Rigidbody2D rigidbody2D)
+    private int _ticksSinceChange;
+    private int _ticksToChange;
+    private bool _move;
+    public RandomMoveState(Customer customer)
     {
         _customer = customer;
-        _rigidbody2D = rigidbody2D;
     }
     public void OnEnter()
     {
         _customer.Show();
+        _customer.Walk((int)Mathf.Sign(Random.Range(-1, 1)));
+        _ticksSinceChange = 0;
+        _ticksToChange = Random.Range(100, 150);
     }
 
     public void OnExit()
     {
-        _rigidbody2D.velocity = new Vector2(0, _rigidbody2D.velocity.y);
+        
     }
 
     public void Tick()
     {
-        _rigidbody2D.AddForce(new Vector2(_customer.WalkingSpeed, 0), ForceMode2D.Impulse);
-        if (_rigidbody2D.velocity.x > _customer.MaxWalkingSpeed)
+        if (_move)
         {
-            _rigidbody2D.velocity = new Vector2(_customer.MaxWalkingSpeed * Mathf.Sign(_rigidbody2D.velocity.x), _rigidbody2D.velocity.y);
+            var hit = Physics2D.Raycast(_customer.transform.position, new Vector2(_customer.Direction, 0), 1, LayerMask.GetMask("Platforms"));
+            var direction = _customer.Direction;
+            if (hit)
+            {
+                direction *= -1;
+
+            }
+            _customer.Walk(direction);
+        }
+        else
+        {
+            _customer.Idle();
+        }
+       
+        _ticksSinceChange++;
+
+        if (_ticksSinceChange == _ticksToChange)
+        {
+            _ticksSinceChange = 0;
+            _ticksToChange = Random.Range(100, 150);
+            if (Random.value >= 0.5)
+            {
+                _move = true;
+            }
+            else
+            {
+                _move = false;
+            }
         }
     }
 }

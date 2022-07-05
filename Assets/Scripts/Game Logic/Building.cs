@@ -14,7 +14,6 @@ public abstract class Building : MonoBehaviour
             return;
         }
         float startTime = Time.time;
-        customer.Busy = true;
         customer.Hide();
         
         while (Time.time - startTime < _duration)
@@ -22,7 +21,6 @@ public abstract class Building : MonoBehaviour
             await Task.Delay(_interval);
         }
         
-        customer.Busy = false;
         customer.Show();
         TaskReward(customer);
     }
