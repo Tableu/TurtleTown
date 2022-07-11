@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class TravelManager : MonoBehaviour, ISavable
 {
+    [Serializable]
+    public class TravelDestination
+    {
+        public float TravelDuration;
+        public float RemainingDuration;
+    }
     private static TravelManager _instance;
 
     public static TravelManager Instance
@@ -24,23 +30,26 @@ public class TravelManager : MonoBehaviour, ISavable
     public string id => "travel_manager";
     
     public bool IsTravelling { get; private set; }
-    public float RemainingDuration { get; private set; }
+    public TravelDestination Destination { get; private set; }
     public Action TravelStart;
     public Action TravelEnd;
+
+    [SerializeField] private int interval;
 
     private void Awake()
     {
         _instance = this;
     }
 
-    public async void StartTravel(float duration, int interval)
+    public async void StartTravel(TravelDestination destination)
     {
+        Destination = destination;
         float startTime = Time.time;
         IsTravelling = true;
         TravelStart?.Invoke();
-        while (Time.time - startTime < duration)
+        while (Time.time - startTime < Destination.TravelDuration)
         {
-            RemainingDuration = Time.time - startTime;
+            Destination.RemainingDuration = Time.time - startTime;
             await Task.Delay(interval);
         }
         IsTravelling = false;
@@ -52,7 +61,7 @@ public class TravelManager : MonoBehaviour, ISavable
         return new SaveData()
         {
             IsTravelling = IsTravelling,
-            Duration = RemainingDuration
+            Destination = Destination
         };
     }
 
@@ -60,9 +69,12 @@ public class TravelManager : MonoBehaviour, ISavable
     {
         var saveData = state.ToObject<SaveData>();
         IsTravelling = saveData.IsTravelling;
-        if (saveData.Duration > 0)
+        if (saveData.Destination != null)
         {
-            StartTravel(saveData.Duration, 1000);
+            if (saveData.Destination.TravelDuration > 0)
+            {
+                StartTravel(saveData.Destination);
+            }
         }
     }
 
@@ -70,7 +82,7 @@ public class TravelManager : MonoBehaviour, ISavable
     public struct SaveData
     {
         public bool IsTravelling;
-        public float Duration;
+        public TravelDestination Destination;
     }
     
     #if UNITY_EDITOR
@@ -89,7 +101,11 @@ public class TravelManager : MonoBehaviour, ISavable
             Debug.Log("TravelEnd");
             _parallaxBackground.EnableBackground = false;
         };
-        StartTravel(15, 1000);
+        
+        StartTravel(new TravelDestination
+        {
+            TravelDuration = 100
+        });
     }
 #endif
 }

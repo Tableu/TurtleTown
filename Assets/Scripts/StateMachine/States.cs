@@ -15,7 +15,7 @@ public class RandomMoveState : IState
         _customer.Show();
         _customer.Walk((int)Mathf.Sign(Random.Range(-1, 1)));
         _ticksSinceChange = 0;
-        _ticksToChange = Random.Range(100, 150);
+        _ticksToChange = Random.Range(_customer.RandomWalkingRange.x, _customer.RandomWalkingRange.y);
     }
 
     public void OnExit()
@@ -46,7 +46,7 @@ public class RandomMoveState : IState
         if (_ticksSinceChange == _ticksToChange)
         {
             _ticksSinceChange = 0;
-            _ticksToChange = Random.Range(100, 150);
+            _ticksToChange = Random.Range(_customer.RandomWalkingRange.x, _customer.RandomWalkingRange.y);
             if (Random.value >= 0.5)
             {
                 _move = true;

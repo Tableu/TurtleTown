@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class CameraDrag : MonoBehaviour
 {
     public float dragSpeed = 2;
+    public Vector2 dragAxis;
     public LayerMask LayerMask;
     private Vector2 dragOrigin;
     private bool dragging;
@@ -19,8 +20,8 @@ public class CameraDrag : MonoBehaviour
     {
         if (dragging)
         {
-            Vector2 pos = Camera.main.ScreenToViewportPoint(Mouse.current.position.ReadValue() - dragOrigin);
-            Vector2 move = new Vector2(pos.x * dragSpeed, 0);
+            Vector2 pos = Camera.main.ScreenToViewportPoint(dragOrigin-Mouse.current.position.ReadValue());
+            Vector2 move = new Vector2(pos.x * dragSpeed*dragAxis.x, pos.y*dragSpeed*dragAxis.y);
             transform.Translate(move, Space.World);
         }
     }

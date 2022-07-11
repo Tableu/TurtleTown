@@ -2,12 +2,15 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class Customer : MonoBehaviour
 {
     [Header("Stats")] 
     [SerializeField] private float walkingSpeed;
     [SerializeField] private float maxWalkingSpeed;
+    [SerializeField] private Vector2Int thoughtBubbleCooldownRange;
+    [SerializeField] private Vector2Int randomWalkingRange;
 
     [Header("References")]
     [SerializeField] private Collider2D _collider;
@@ -27,11 +30,13 @@ public class Customer : MonoBehaviour
     public float MaxWalkingSpeed => maxWalkingSpeed;
     public int Direction => _direction;
 
+    public Vector2Int RandomWalkingRange => randomWalkingRange;
+
     public void Start()
     {
         _stateMachine = new FSM();
         _stateMachine.SetState(new RandomMoveState(this));
-        _thoughtBubbleCooldown = 1000;
+        _thoughtBubbleCooldown = Random.Range(thoughtBubbleCooldownRange.x, thoughtBubbleCooldownRange.y);
     }
 
     public void FixedUpdate()
@@ -86,7 +91,7 @@ public class Customer : MonoBehaviour
     {
         _currentThoughtBubble = Instantiate(thoughtBubble, transform);
         _currentThoughtBubble.transform.localPosition = thoughtBubbleOffset;
-        _thoughtBubbleCooldown = 1000;
+        _thoughtBubbleCooldown = Random.Range(thoughtBubbleCooldownRange.x, thoughtBubbleCooldownRange.y);;
     }
 
     public async Task EnterBuilding()

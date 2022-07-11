@@ -5,6 +5,7 @@ using UnityEngine;
 public class CustomerVisuals : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     public void FlipVisuals()
     {
         if (transform.rotation.y > 0)
@@ -39,5 +40,10 @@ public class CustomerVisuals : MonoBehaviour
     {
         animator.SetBool("Walk", false);
         animator.SetBool("Idle", true);
+    }
+
+    public void SetSortingOrder(int order)
+    {
+        spriteRenderer.sortingOrder = order;
     }
 }
